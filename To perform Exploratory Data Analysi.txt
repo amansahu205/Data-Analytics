@@ -1,0 +1,51 @@
+To perform Exploratory Data Analysis (EDA) on the NYC For-Hire Vehicle High Volume (FHVHV) taxi data, you can follow a structured approach using Python. Here are some key steps and queries you can use to gain insights from the data:
+
+1. Data Preprocessing
+Load the Data: Use DuckDB to load the Parquet files directly into a Pandas DataFrame for easier manipulation.
+python
+import duckdb
+import pandas as pd
+
+# Load data from Parquet file
+con = duckdb.connect()
+df = con.execute("SELECT * FROM 'fhvhv_tripdata.parquet'").df()
+
+Check for Missing Values: Identify and handle missing values in the dataset.
+python
+missing_values = df.isnull().sum()
+print(missing_values)
+
+Outlier Detection: Identify and handle outliers, particularly in numerical columns like trip distance or fare amount.
+2. Univariate Analysis
+Descriptive Statistics: Get summary statistics for numerical columns.
+python
+summary_stats = df.describe()
+print(summary_stats)
+
+Distribution Plots: Visualize distributions of key variables such as trip duration, fare amount, and passenger count using histograms or box plots.
+3. Bivariate Analysis
+Correlation Analysis: Examine relationships between variables using a correlation matrix.
+python
+correlation_matrix = df.corr()
+print(correlation_matrix)
+
+Scatter Plots: Visualize relationships between pairs of variables, such as trip distance vs. fare amount.
+4. Temporal Analysis
+Time Series Analysis: Analyze trends over time by aggregating data by hour, day, or month.
+python
+df['pickup_datetime'] = pd.to_datetime(df['pickup_datetime'])
+hourly_trips = df.set_index('pickup_datetime').resample('H').size()
+print(hourly_trips)
+
+Peak Hours Identification: Identify peak hours for pickups and drop-offs.
+5. Spatial Analysis
+Pickup and Drop-off Locations: Analyze spatial distribution using taxi zone IDs.
+python
+pickup_counts = df['pickup_location_id'].value_counts()
+dropoff_counts = df['dropoff_location_id'].value_counts()
+
+Heatmaps: Create heatmaps to visualize pickup and drop-off densities across different zones.
+6. Advanced Analysis
+Clustering: Use clustering algorithms to identify patterns in trip data, such as common routes or zones with high demand.
+Feature Engineering: Create new features like trip speed (distance/time) or time of day categories (morning, afternoon, evening).
+By following these steps, you can conduct a comprehensive EDA on the NYC FHVHV taxi data to uncover insights related to trip patterns, demand hotspots, and temporal trends. This analysis can help inform decisions for optimizing operations or improving service delivery.
